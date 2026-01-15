@@ -120,21 +120,21 @@ export function Header() {
                 <div className="md:hidden border-t border-gray-200">
                     <div className="container mx-auto px-4 py-4 space-y-3 flex flex-col">
                         <Link
-                            href="/news/news"
+                            href="/news"
                             className="text-base font-medium text-gray-600 hover:text-[var(--color-solar-orange)]"
                             onClick={() => setIsMenuOpen(false)}
                         >
                             News
                         </Link>
                         <Link
-                            href="/news/insight"
+                            href="/insight"
                             className="text-base font-medium text-gray-600 hover:text-[var(--color-solar-orange)]"
                             onClick={() => setIsMenuOpen(false)}
                         >
                             Insight
                         </Link>
                         <Link
-                            href="/news/regulation"
+                            href="/regulation"
                             className="text-base font-medium text-gray-600 hover:text-[var(--color-solar-orange)]"
                             onClick={() => setIsMenuOpen(false)}
                         >
