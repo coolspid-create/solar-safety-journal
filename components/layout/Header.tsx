@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabase';
@@ -12,7 +12,9 @@ export function Header() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const { language, setLanguage, t } = useLanguage();
     const searchParams = useSearchParams();
+    const router = useRouter();
     const { user } = useAuth();
+    const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
 
     const toggleLanguage = () => {
         setLanguage(language === 'ko' ? 'en' : 'ko');
@@ -21,6 +23,15 @@ export function Header() {
     const handleLogout = async () => {
         await supabase.auth.signOut();
         window.location.href = '/';
+    };
+
+    const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget);
+        const q = formData.get('q') as string;
+        if (q.trim()) {
+            router.push(`/search?q=${encodeURIComponent(q.trim())}`);
+        }
     };
 
     return (
@@ -44,13 +55,14 @@ export function Header() {
 
                 {/* Search Bar (Desktop) */}
                 <div className="hidden md:flex flex-grow max-w-md mx-8">
-                    <form action="/search" method="GET" className="w-full relative">
+                    <form onSubmit={handleSearch} className="w-full relative">
                         <input
                             type="text"
                             name="q"
                             placeholder={language === 'ko' ? '기사 검색...' : 'Search articles...'}
                             className="w-full pl-10 pr-4 py-1.5 text-sm border border-gray-300 rounded-full focus:outline-none focus:border-[var(--color-solar-orange)] focus:ring-1 focus:ring-[var(--color-solar-orange)] transition-shadow"
-                            defaultValue={searchParams.get('q') || ''}
+                            defaultValue={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
                         />
                         <button type="submit" className="absolute left-3.5 top-1/2 -translate-y-1/2">
                             <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
