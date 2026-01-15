@@ -262,8 +262,8 @@ export default function Home() {
         <section className="bg-orange-50/50 py-20 border-t border-orange-100">
           <div className="container mx-auto px-4 text-center">
             <Badge variant="orange" className="mb-4">Newsletter</Badge>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900 leading-tight">
-              태양광 전문가의 인사이트를 매주 메일함으로
+            <h2 className="text-2xl md:text-4xl font-bold mb-4 text-gray-900 leading-tight">
+              태양광 전문가의 인사이트를 매주 메일함으로 보내드립니다.
             </h2>
             <p className="text-lg text-gray-600 mb-10 max-w-2xl mx-auto leading-relaxed">
               최신 정책 변화부터 현장 안전 노하우까지, <br className="hidden sm:block" />
