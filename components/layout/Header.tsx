@@ -1,20 +1,16 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import Link from 'next/link';
-import { useSearchParams, useRouter } from 'next/navigation';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabase';
-import { Button } from '@/components/ui/Button';
+import { HeaderSearchBar } from './HeaderSearchBar';
 
 export function Header() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const { language, setLanguage, t } = useLanguage();
-    const searchParams = useSearchParams();
-    const router = useRouter();
+    const { language, setLanguage } = useLanguage();
     const { user } = useAuth();
-    const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
 
     const toggleLanguage = () => {
         setLanguage(language === 'ko' ? 'en' : 'ko');
@@ -25,19 +21,9 @@ export function Header() {
         window.location.href = '/';
     };
 
-    const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const formData = new FormData(e.currentTarget);
-        const q = formData.get('q') as string;
-        if (q.trim()) {
-            router.push(`/search?q=${encodeURIComponent(q.trim())}`);
-        }
-    };
-
     return (
         <header className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
             <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-                {/* Logo */}
                 {/* Logo */}
                 <Link href="/" className="group flex items-center gap-3 shrink-0 transition-transform duration-300 hover:-translate-y-0.5">
                     {/* Icon with interactive glow */}
@@ -53,24 +39,10 @@ export function Header() {
                     </div>
                 </Link>
 
-                {/* Search Bar (Desktop) */}
-                <div className="hidden md:flex flex-grow max-w-md mx-8">
-                    <form onSubmit={handleSearch} className="w-full relative">
-                        <input
-                            type="text"
-                            name="q"
-                            placeholder={language === 'ko' ? '기사 검색...' : 'Search articles...'}
-                            className="w-full pl-10 pr-4 py-1.5 text-sm border border-gray-300 rounded-full focus:outline-none focus:border-[var(--color-solar-orange)] focus:ring-1 focus:ring-[var(--color-solar-orange)] transition-shadow"
-                            defaultValue={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                        />
-                        <button type="submit" className="absolute left-3.5 top-1/2 -translate-y-1/2">
-                            <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                            </svg>
-                        </button>
-                    </form>
-                </div>
+                {/* Search Bar (Desktop) - Suspended */}
+                <Suspense fallback={<div className="hidden md:flex flex-grow max-w-md mx-8" />}>
+                    <HeaderSearchBar />
+                </Suspense>
 
                 {/* Desktop Navigation */}
                 <nav className="hidden md:flex items-center space-x-8 lg:space-x-10">
@@ -99,6 +71,7 @@ export function Header() {
                         onClick={toggleLanguage}
                         className="text-sm font-bold text-[var(--color-solar-orange)] hover:text-[var(--color-solar-orange-hover)] transition-colors"
                     >
+                        {/* eslint-disable-next-line react/no-unescaped-entities */}
                         {language === 'ko' ? 'EN' : 'KO'}
                     </button>
                 </nav>
