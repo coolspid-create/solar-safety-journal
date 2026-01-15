@@ -14,13 +14,11 @@ export const metadata: Metadata = {
 };
 
 export default async function InsightPage() {
-    // Mapping URL param to Database Category Value
-    // Insight covers 'Safety', 'Maintenance', or specific 'Insight' tag if existed.
-    // Based on user logic: Safety -> Insight, Maintenance -> Insight.
+    // Insight covers 'Safety', 'Maintenance', or specific 'Insight' tag.
     const { data: articlesData, error } = await supabase
         .from('articles')
         .select('*')
-        .or('category.eq.Safety,category.eq.Maintenance,category.eq.Insight')
+        .in('category', ['Insight', 'Safety', 'Maintenance'])
         .order('created_at', { ascending: false });
 
     if (error) {
@@ -66,8 +64,8 @@ export default async function InsightPage() {
                                     key={tab.id}
                                     href={tab.path}
                                     className={`pb-4 px-2 text-xl font-bold whitespace-nowrap border-b-2 transition-colors ${tab.id === 'insight'
-                                            ? 'border-[var(--color-solar-orange)] text-[var(--color-solar-orange)]'
-                                            : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                                        ? 'border-[var(--color-solar-orange)] text-[var(--color-solar-orange)]'
+                                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                                         }`}
                                 >
                                     {tab.label}
